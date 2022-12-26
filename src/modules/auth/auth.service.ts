@@ -13,7 +13,6 @@ import sgMail from '@sendgrid/mail'
 import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
 import { compareHash, hash } from 'helpers/bcrypt'
-import { sendMail } from 'helpers/mail'
 import { PostgresErrorCode } from 'helpers/postgresErrorCodes.enum'
 import { CookieType, JwtType, TokenPayload, UserData, UserReturnData } from 'interfaces'
 import Logging from 'library/Logging'
@@ -45,74 +44,13 @@ export class AuthService {
     return user
   }
 
-  async register(res: Response, registerUserDto: RegisterUserDto): Promise<void> {
+  async register(registerUserDto: RegisterUserDto): Promise<User> {
     const hashedPassword: string = await hash(registerUserDto.password)
     const user = await this.usersService.create({
       ...registerUserDto,
       password: hashedPassword,
     })
-    if (process.env.STAGE === 'development') {
-      const token = await this.generateToken(user.id, user.email, JwtType.EMAIL_VERIFICATION)
-      await this.usersService.update(user.id, { email_token: token })
-      await sendMail({
-        from: {
-          name: 'E-Gostinec',
-          email: this.configService.get('SENDGRID_EMAIL_FROM'),
-        },
-        to: user.email,
-        subject: 'E-Gostinec - verify your email',
-        text: `
-         Hello ${user.email},
-         Thanks for registering on our site.
-         Please click or copy and paste the address below to verify your account.
-         ${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}
-      `,
-        html: `
-        <h1>Hello ${user.email},</h1>
-        <p>Thanks for registering on our site.</p>
-        <p>Please click the link below to verify your account.</p>
-        <a href='${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}'>Verify your account</a>
-      `,
-      })
-      try {
-        res.status(201).send('Check your inbox and verify your account, to start using all services.')
-      } catch (error) {
-        Logging.error(error)
-        throw new InternalServerErrorException('Something went wrong while sending a response to the client side.')
-      }
-    }
-  }
-
-  async verifyEmail(req: Request, res: Response): Promise<void> {
-    const token = req.query.token.toString()
-    try {
-      await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_EMAIL_VERIFICATION_SECRET'),
-      })
-    } catch (error) {
-      Logging.error(error)
-      if (error instanceof Error) {
-        res.redirect(
-          `${this.configService.get(
-            'ON_ERROR_URL',
-          )}?error="Unauthorized"&errorName="EMAIL_VERIFICATION"&errorCode=401&errorMessage="Your email verification link has expired."&description="To get valid verification link please click on 'Verify email' button below."&token="${token}"`,
-        )
-      }
-    }
-    const user = await this.usersService.verifyUser(token)
-    if (req.query.email) {
-      await this.usersService.updateEmail(user as User, req.query.email.toString())
-    }
-    try {
-      res.redirect(
-        `${this.configService.get(
-          'ON_EMAIL_VERIFICATION_SUCCESS_URL',
-        )}?message=Your account is verified. Now you can start using all services.`,
-      )
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Something went wrong while sending a response to the client side.')
-    }
+    return user
   }
 
   async login(user: User, res: Response): Promise<void> {
@@ -151,46 +89,6 @@ export class AuthService {
     } catch (error) {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
-    }
-  }
-
-  async resendEmailVerification(body: { token?: string; email?: string }, res: Response): Promise<void> {
-    let user: User
-    if (body.token) {
-      user = await this.usersService.findBy('email_token', body.token)
-    } else {
-      user = await this.usersService.findBy('email', body.email)
-    }
-    if (!user) {
-      throw new BadRequestException('User not found.')
-    }
-    if (user.email_verified) {
-      throw new BadRequestException('Email already confirmed.')
-    }
-    if (process.env.STAGE === 'development') {
-      const token = await this.generateToken(user.id, user.email, JwtType.EMAIL_VERIFICATION)
-      await this.usersService.update(user.id, { email_token: token })
-      await sendMail({
-        from: {
-          name: 'E-Gostinec',
-          email: this.configService.get('SENDGRID_EMAIL_FROM'),
-        },
-        to: user.email,
-        subject: 'E-Gostinec - verify your email',
-        text: `
-         Hello ${user.email},
-         Thanks for registering on our site.
-         Please click or copy and paste the address below to verify your account.
-         ${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}
-      `,
-        html: `
-        <h1>Hello ${user.email},</h1>
-        <p>Thanks for registering on our site.</p>
-        <p>Please click the link below to verify your account.</p>
-        <a href='${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}'>Verify your account</a>
-      `,
-      })
-      res.status(201).send('Check your inbox and verify your account, to start using all services.')
     }
   }
 

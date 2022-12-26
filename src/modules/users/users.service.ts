@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'entities/user.entity'
 import { compareHash, hash } from 'helpers/bcrypt'
-import { sendMail } from 'helpers/mail'
 import { PostgresErrorCode } from 'helpers/postgresErrorCodes.enum'
 import { JwtType, PropertyTypes } from 'interfaces'
 import Logging from 'library/Logging'
@@ -113,33 +112,6 @@ export class UsersService {
     if (user.email !== email && email) {
       user.email = email
       user.email_verified = false
-      if (process.env.STAGE === 'development') {
-        const token = await this.authService.generateToken(user.id, user.email, JwtType.EMAIL_VERIFICATION)
-        await this.update(user.id, { email_token: token })
-        await sendMail({
-          from: {
-            name: 'E-Gostinec',
-            email: this.configService.get('SENDGRID_EMAIL_FROM'),
-          },
-          to: user.email,
-          subject: 'E-Gostinec - verify your email',
-          text: `
-           Hello ${updateUserDto.email},
-           Read this email only if you requested to change your email address.
-           Please click or copy and paste the address below to verify your account.
-           ${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}
-        `,
-          html: `
-          <h1>Hello ${updateUserDto.email},</h1>
-          <p>Read this email only if you requested to change your email address.</p>
-          <p>Please click the link below to verify your account.</p>
-          <a href='${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}&email=${
-            updateUserDto.email
-          }'>Verify your account</a>
-        `,
-        })
-        return 'Check your inbox and verify your account, to start using all services.'
-      }
     }
     if (current_password && new_password && confirm_password) {
       if (!(await compareHash(current_password, user.password))) {
