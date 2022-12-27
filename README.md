@@ -23,7 +23,7 @@ If you want to have a different font, go to: [google fonts](https://fonts.google
 - CRUD functionality - Create Read Update Delete
 - file upload
 - connect ReactJS and NestJS
-- setup NestJS with swagger documentation and custom logging
+- setup NestJS with custom logging
 - connect to PostgreSQL database using TypeORM
 - create dtos with validation
 - deploy ReactJS to AWS S3 Bucket
@@ -37,7 +37,6 @@ If you want to have a different font, go to: [google fonts](https://fonts.google
 - [react-bootstrap](https://react-bootstrap.github.io/getting-started/introduction)
 - [react-hook-form](https://react-hook-form.com/)
 - [yup validation](https://react-hook-form.com/advanced-usage#CustomHookwithResolver)
-- [Swagger API documentation](https://swagger.io/)
 - [PostgreSQL](https://www.postgresql.org/)
 - [TypeORM](https://typeorm.io/)
 - [AWS](https://aws.amazon.com/)

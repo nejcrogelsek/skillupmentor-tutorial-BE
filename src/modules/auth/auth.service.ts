@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import sgMail from '@sendgrid/mail'
 import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
 import { compareHash, hash } from 'helpers/bcrypt'
@@ -26,9 +25,7 @@ export class AuthService {
     @Inject(forwardRef(() => UsersService)) private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) {
-    sgMail.setApiKey(configService.get('SENDGRID_API_KEY'))
-  }
+  ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
     Logging.log('Validating user...')
