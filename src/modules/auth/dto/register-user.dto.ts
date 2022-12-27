@@ -14,10 +14,13 @@ export class RegisterUserDto {
 
   @IsNotEmpty()
   @MinLength(6)
-  @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/)
+  @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/, {
+    message:
+      'Password must have at least one number, lower or upper case letter and it has to be longer than 5 characters.',
+  })
   password: string
 
   @IsNotEmpty()
-  @Match(RegisterUserDto, (s) => s.password)
+  @Match(RegisterUserDto, (s) => s.password, { message: 'Passwords do not match.' })
   confirm_password: string
 }

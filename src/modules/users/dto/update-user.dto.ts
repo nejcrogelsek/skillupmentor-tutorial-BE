@@ -1,5 +1,6 @@
 import { IsEmail, IsOptional, Matches, MinLength } from 'class-validator'
 import { Match } from 'decorators/match-decorator'
+import { UserAccess } from 'interfaces/user.interface'
 
 export class UpdateUserDto {
   @IsOptional()
@@ -16,18 +17,17 @@ export class UpdateUserDto {
   refresh_token?: string | null
 
   @IsOptional()
+  access?: UserAccess
+
+  @IsOptional()
   @MinLength(6)
-  @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/)
+  @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/, {
+    message:
+      'Password must have at least one number, lower or upper case letter and it has to be longer than 5 characters.',
+  })
   password?: string
 
   @IsOptional()
-  @MinLength(6)
-  @Matches(
-    /^(?=.*[0-9])(?=.*[!@#"'$=%^&*(),._|<>{}€+?\-\\])(?=.*?[A-Z])(?=.*?[a-z])[a-zA-Z0-9!@#"'$=%^&*(),._|<>{}€+?\-\\]{6,16}$/,
-  )
-  new_password?: string
-
-  @IsOptional()
-  @Match(UpdateUserDto, (s) => s.new_password, { message: 'New passwords do not match.' })
+  @Match(UpdateUserDto, (s) => s.password, { message: 'Passwords do not match.' })
   confirm_password?: string
 }

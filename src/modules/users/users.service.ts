@@ -65,28 +65,20 @@ export class UsersService {
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User | string> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id)
-    const { email, password: current_password, new_password, confirm_password, ...data } = updateUserDto
+    const { email, password, confirm_password, ...data } = updateUserDto
     if (user.email !== email && email) {
       user.email = email
     }
-    if (current_password && new_password && confirm_password) {
-      if (!(await compareHash(current_password, user.password))) {
-        throw new BadRequestException('Current password is incorrect.')
-      }
-      if (current_password === new_password) {
-        throw new BadRequestException('New password cannot be the same as your old password.')
-      }
-      user.password = await hash(new_password)
-    } else if (new_password && confirm_password) {
-      if (new_password !== confirm_password) {
+    if (password && confirm_password) {
+      if (password !== confirm_password) {
         throw new BadRequestException('Passwords do not match.')
       }
-      if (await compareHash(new_password, user.password)) {
+      if (await compareHash(password, user.password)) {
         throw new BadRequestException('New password cannot be the same as your old password.')
       }
-      user.password = await hash(new_password)
+      user.password = await hash(password)
     }
     try {
       Object.entries(data).map((entry) => {
