@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, Matches, MinLength } from 'class-validator'
+import { IsEmail, IsOptional, Matches, MinLength, ValidateIf } from 'class-validator'
 import { Match } from 'decorators/match-decorator'
 import { UserAccess } from 'interfaces/user.interface'
 
@@ -19,15 +19,16 @@ export class UpdateUserDto {
   @IsOptional()
   access?: UserAccess
 
-  @IsOptional()
-  @MinLength(6)
+  @ValidateIf((o) => typeof o.password === 'string' && o.password.length > 0)
   @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/, {
     message:
       'Password must have at least one number, lower or upper case letter and it has to be longer than 5 characters.',
   })
+  @IsOptional()
   password?: string
 
-  @IsOptional()
+  @ValidateIf((o) => typeof o.confirm_password === 'string' && o.confirm_password.length > 0)
   @Match(UpdateUserDto, (s) => s.password, { message: 'Passwords do not match.' })
+  @IsOptional()
   confirm_password?: string
 }
