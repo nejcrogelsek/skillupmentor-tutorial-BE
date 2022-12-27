@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   	"email": "nejcrogelsek0@gmail.com",
-  	"password": "Nejc123!!!"
+  	"password": "Nejc123!!"
 }
 
 ### GET /users
@@ -34,7 +34,7 @@ PATCH http://localhost:8080/users/50b477f4-88bf-4ba8-8353-7d1aa6c6f1a5 HTTP/1.1
 Content-Type: application/json
 
 {
-    "first_name": "Nejc",
+    "first_name": "Nejko",
   	"email": "nejcrogelsek0@gmail.com"
 }
 
