@@ -16,8 +16,11 @@ export class User extends Base {
   @Column({ nullable: true })
   last_name: string
 
-  @Column({ default: UserAccess.USER })
+  @Column({ type: 'enum', enum: UserAccess, default: UserAccess.USER })
   access: UserAccess
+
+  @Column({ nullable: true })
+  image_path: string
 
   @Column({ nullable: true })
   @Exclude()

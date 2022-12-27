@@ -10,6 +10,7 @@ export interface UserData {
   first_name?: string
   last_name?: string
   email: string
+  image_path?: string
 }
 
 export type PropertyTypes = string | boolean | Date | null | undefined
