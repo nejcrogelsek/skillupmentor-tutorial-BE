@@ -4,6 +4,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { Public } from 'decorators/public.decorator'
 import { diskStorage } from 'multer'
 import { extname } from 'path'
+import { FileFilter } from 'utils/FileFilter'
 
 import { AppService } from './app.service'
 
@@ -28,6 +29,7 @@ export class AppController {
           callback(null, filename)
         },
       }),
+      fileFilter: FileFilter,
     }),
   )
   async uploadFiles(@UploadedFile() file: Express.Multer.File): Promise<void> {
