@@ -116,16 +116,4 @@ export class MenusService {
       throw new InternalServerErrorException('Something went wrong while deleting a menu.')
     }
   }
-
-  async removeAll(): Promise<void> {
-    const menus = await this.findAll()
-    try {
-      menus.forEach(async (menu) => {
-        await this.menusRepository.remove(menu)
-      })
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Something went wrong while deleting the menu.')
-    }
-  }
 }

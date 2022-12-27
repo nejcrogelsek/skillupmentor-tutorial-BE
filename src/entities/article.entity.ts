@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger'
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 
 import { ArticleCategory } from './article_category.entity'
@@ -7,39 +6,30 @@ import { Menu } from './menu.entity'
 
 @Entity()
 export class Article extends Base {
-  @ApiProperty()
   @Column()
   name: string
 
-  @ApiProperty()
   @Column()
   price: string
 
-  @ApiProperty()
   @Column()
   description: string
 
-  @ApiProperty()
   @Column()
   quantity: string
 
-  @ApiProperty()
   @Column()
   logo: string
 
-  @ApiProperty({ default: false })
   @Column({ default: false })
   show_description: boolean
 
-  @ApiProperty({ default: false })
   @Column({ default: false })
   show_on_menu: boolean
 
-  @ApiProperty({ default: false })
   @Column({ default: false })
   take_into_account_when_listing: boolean
 
-  @ApiProperty({ default: false })
   @Column({ default: false })
   notify_when_stock_is_low: boolean
 

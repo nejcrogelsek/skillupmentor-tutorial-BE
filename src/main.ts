@@ -1,6 +1,5 @@
 import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import cookieParser from 'cookie-parser'
 import Logging from 'library/Logging'
 
@@ -16,16 +15,6 @@ async function bootstrap() {
   })
   app.useGlobalPipes(new ValidationPipe())
   app.use(cookieParser())
-
-  // Setup Swagger
-  const config = new DocumentBuilder()
-    .setTitle('Tutorial API')
-    .setDescription('This is API for Tutorial.')
-    .setVersion('1.0.0')
-    .build()
-
-  const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('/', app, document)
 
   const PORT = process.env.PORT || 8080
   await app.listen(PORT)

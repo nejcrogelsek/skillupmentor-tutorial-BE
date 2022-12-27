@@ -11,7 +11,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
 import { GetCurrentUser, GetCurrentUserId, Public } from 'decorators'
 import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
@@ -21,15 +20,12 @@ import { AuthService } from './auth.service'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { JwtAuthGuard, JwtRefreshAuthGuard, LocalAuthGuard } from './guards'
 
-@ApiTags('Authentication')
 @Controller('auth')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Public()
-  @ApiCreatedResponse({ description: 'Create new user.' })
-  @ApiBadRequestResponse()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() body: RegisterUserDto): Promise<User> {
@@ -37,17 +33,13 @@ export class AuthController {
   }
 
   @Public()
-  @ApiCreatedResponse({ description: 'Sign in with email and password.' })
-  @ApiBadRequestResponse()
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(@Req() req: RequestWithUser, @Res() res: Response): Promise<void> {
+  async login(@Req() req: RequestWithUser, @Res() res: Response): Promise<User> {
     return this.authService.login(req.user, res)
   }
 
-  @ApiCreatedResponse({ description: 'Signout user.' })
-  @ApiBadRequestResponse()
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
   @Post('signout')
@@ -56,8 +48,6 @@ export class AuthController {
   }
 
   @Public()
-  @ApiCreatedResponse({ description: 'Refresh tokens.' })
-  @ApiBadRequestResponse()
   @UseGuards(JwtRefreshAuthGuard)
   @Get('refresh')
   @HttpCode(HttpStatus.ACCEPTED)
@@ -65,18 +55,15 @@ export class AuthController {
     return this.authService.refreshTokens(req)
   }
 
-  @ApiCreatedResponse({
-    description: 'Returns user data if user is authenticated.',
-  })
-  @ApiBadRequestResponse()
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getCurrentUser(@GetCurrentUser() user: User): Promise<{ id: string; email: string; email_verified?: boolean }> {
+  async getCurrentUser(@GetCurrentUser() user: User): Promise<UserData> {
     return {
       id: user.id,
+      first_name: user.first_name,
+      last_name: user.last_name,
       email: user.email,
-      email_verified: user.email_verified,
     }
   }
 }

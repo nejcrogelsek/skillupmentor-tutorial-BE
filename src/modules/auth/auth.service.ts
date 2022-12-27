@@ -14,7 +14,7 @@ import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
 import { compareHash, hash } from 'helpers/bcrypt'
 import { PostgresErrorCode } from 'helpers/postgresErrorCodes.enum'
-import { CookieType, JwtType, TokenPayload, UserData, UserReturnData } from 'interfaces'
+import { CookieType, JwtType, TokenPayload, UserData } from 'interfaces'
 import Logging from 'library/Logging'
 import { UsersService } from 'modules/users/users.service'
 
@@ -53,7 +53,8 @@ export class AuthService {
     return user
   }
 
-  async login(user: User, res: Response): Promise<void> {
+  async login(userFromRequest: User, res: Response): Promise<User> {
+    const user = await this.usersService.findById(userFromRequest.id)
     const accessToken = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)
     const accessTokenCookie = await this.generateCookie(accessToken, CookieType.ACCESS_TOKEN)
     const refreshToken = await this.generateToken(user.id, user.email, JwtType.REFRESH_TOKEN)
@@ -61,23 +62,10 @@ export class AuthService {
     try {
       res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie])
       await this.updateRtHash(user.id, refreshToken)
+      return user
     } catch (error) {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
-    }
-    const newUser = {
-      id: user.id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      access: user.access,
-      email: user.email,
-      email_verified: user.email_verified,
-    }
-    try {
-      res.status(200).send(newUser)
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Something went wrong while sending a response to the client side.')
     }
   }
 
@@ -85,14 +73,17 @@ export class AuthService {
     const user = await this.usersService.findById(userId)
     await this.usersService.update(user.id, { refresh_token: null })
     try {
-      res.setHeader('Set-Cookie', this.getCookiesForSignOut()).sendStatus(200)
+      res
+        .setHeader('Set-Cookie', this.getCookiesForSignOut())
+        .sendStatus(200)
+        .json({ message: 'User signout successfully' })
     } catch (error) {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
     }
   }
 
-  async refreshTokens(req: Request): Promise<UserReturnData> {
+  async refreshTokens(req: Request): Promise<UserData> {
     const user = await this.usersService.findBy('refresh_token', req.cookies.refresh_token)
     if (!user) {
       throw new ForbiddenException()
@@ -117,7 +108,6 @@ export class AuthService {
     return {
       id: user.id,
       email: user.email,
-      email_verified: user.email_verified,
     }
   }
 

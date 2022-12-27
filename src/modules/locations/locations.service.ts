@@ -144,16 +144,4 @@ export class LocationsService {
       throw new InternalServerErrorException('Something went wrong while deleting a location.')
     }
   }
-
-  async removeAll(): Promise<void> {
-    const locations = await this.findAll()
-    try {
-      locations.forEach(async (location) => {
-        await this.locationsRepository.remove(location)
-      })
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Something went wrong while deleting the locations.')
-    }
-  }
 }
