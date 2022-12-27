@@ -26,7 +26,6 @@ export class UsersService {
   async findBy(property: string, value: PropertyTypes): Promise<User> {
     try {
       return this.usersRepository.findOne({
-        select: ['id', 'email', 'password', 'refresh_token', 'locations', 'created_at', 'updated_at'],
         relations: ['locations'],
         where: { [property]: value },
       })
@@ -39,7 +38,6 @@ export class UsersService {
   async findById(id: string): Promise<User> {
     try {
       const user = this.usersRepository.findOne({
-        select: ['id', 'email', 'password', 'refresh_token', 'locations', 'created_at', 'updated_at'],
         relations: ['locations'],
         where: { id },
       })

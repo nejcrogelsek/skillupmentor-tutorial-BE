@@ -50,16 +50,15 @@ export class AuthService {
     return user
   }
 
-  async login(userFromRequest: User, res: Response): Promise<User> {
+  async login(userFromRequest: User, res: Response): Promise<void> {
     const user = await this.usersService.findById(userFromRequest.id)
     const accessToken = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)
     const accessTokenCookie = await this.generateCookie(accessToken, CookieType.ACCESS_TOKEN)
     const refreshToken = await this.generateToken(user.id, user.email, JwtType.REFRESH_TOKEN)
     const refreshTokenCookie = await this.generateCookie(refreshToken, CookieType.REFRESH_TOKEN)
     try {
-      res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie])
       await this.updateRtHash(user.id, refreshToken)
-      return user
+      res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie]).json({ ...user })
     } catch (error) {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
@@ -133,19 +132,13 @@ export class AuthService {
       const payload: TokenPayload = { sub: userId, name: email, type }
       let token: string
       switch (type) {
-        case 'EMAIL_VERIFICATION':
-          token = await this.jwtService.signAsync(payload, {
-            secret: this.configService.get('JWT_EMAIL_VERIFICATION_SECRET'),
-            expiresIn: `${this.configService.get('JWT_EMAIL_VERIFICATION_EXPIRES')}s`,
-          })
-          break
-        case 'REFRESH_TOKEN':
+        case JwtType.REFRESH_TOKEN:
           token = await this.jwtService.signAsync(payload, {
             secret: this.configService.get('JWT_REFRESH_SECRET'),
             expiresIn: `${this.configService.get('JWT_REFRESH_SECRET_EXPIRES')}s`,
           })
           break
-        case 'ACCESS_TOKEN':
+        case JwtType.ACCESS_TOKEN:
           token = await this.jwtService.signAsync(payload)
           break
         default:
@@ -165,12 +158,12 @@ export class AuthService {
     try {
       let cookie: string
       switch (type) {
-        case 'REFRESH_TOKEN':
+        case CookieType.REFRESH_TOKEN:
           cookie = `refresh_token=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
             'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
           )}; SameSite=strict`
           break
-        case 'ACCESS_TOKEN':
+        case CookieType.ACCESS_TOKEN:
           cookie = `access_token=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
             'JWT_EXPIRATION_TIME',
           )}; SameSite=strict`
