@@ -20,6 +20,9 @@ Content-Type: application/json
   	"password": "Nejc123!!"
 }
 
+### GET /users/image
+GET http://localhost:8080/users/get/image HTTP/1.1
+
 ### GET /users
 GET http://localhost:8080/users HTTP/1.1
 

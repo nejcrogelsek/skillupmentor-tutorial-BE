@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'entities/user.entity'
-import { compareHash, hash } from 'helpers/bcrypt'
 import { PostgresErrorCode } from 'helpers/postgresErrorCodes.enum'
 import { PropertyTypes } from 'interfaces'
 import Logging from 'library/Logging'
 import { Repository } from 'typeorm'
+import { compareHash, hash } from 'utils/bcrypt'
 
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -100,6 +100,7 @@ export class UsersService {
   }
 
   async findImageNameByUserId(id: string): Promise<string> {
+    console.log('userId: ', id)
     const user = await this.findById(id)
     return user.image_path
   }

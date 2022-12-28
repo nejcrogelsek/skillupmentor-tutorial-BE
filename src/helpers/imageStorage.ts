@@ -2,7 +2,6 @@ const FileType = import('file-type')
 import fs from 'fs'
 import { diskStorage, Options } from 'multer'
 import { extname } from 'path'
-import { FileFilter } from 'utils/FileFilter.js'
 
 type validFileExtensionsType = 'png' | 'jpg' | 'jpeg'
 type validMimeType = 'image/png' | 'image/jpg' | 'image/jpeg'
@@ -31,7 +30,6 @@ export const saveImageToStorage: Options = {
 }
 
 export const isFileExtensionSafe = async (fullFilePath: string): Promise<boolean> => {
-  console.log(fullFilePath)
   return (await FileType).fileTypeFromFile(fullFilePath).then((fileExtensionAndMimeType) => {
     if (!fileExtensionAndMimeType?.ext) return false
 

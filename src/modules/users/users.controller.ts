@@ -10,6 +10,7 @@ import {
   Param,
   Post,
   Request,
+  Response,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
@@ -42,17 +43,26 @@ export class UsersController {
     return this.usersService.findById(id)
   }
 
+  @Get('get/image')
+  @HttpCode(HttpStatus.OK)
+  async findImage(@GetCurrentUserId() userId: string, @Response() res): Promise<void> {
+    console.log('hello')
+    const imageName = await this.usersService.findImageNameByUserId(userId)
+    return res.sendFile(imageName, {
+      root: './files',
+    })
+  }
+
   @Post()
   @HttpCode(HttpStatus.OK)
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto)
   }
 
-  @Public()
   @Post('upload')
   @UseInterceptors(FileInterceptor('image_path', saveImageToStorage))
-  @HttpCode(HttpStatus.OK)
-  async upload(@UploadedFile() file: Express.Multer.File, @Request() req): Promise<User> {
+  @HttpCode(HttpStatus.CREATED)
+  async upload(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: string): Promise<User> {
     const filename = file?.filename
 
     if (!filename) throw new BadRequestException('File must be a png, jpg/jpeg')
@@ -60,7 +70,7 @@ export class UsersController {
     const imagesFolderPath = join(process.cwd(), 'files')
     const fullImagePath = join(imagesFolderPath + '/' + file.filename)
     if (await isFileExtensionSafe(fullImagePath)) {
-      return this.usersService.updateUserImageId('50b477f4-88bf-4ba8-8353-7d1aa6c6f1a5', filename)
+      return this.usersService.updateUserImageId(userId, filename)
     }
     removeFile(fullImagePath)
     throw new BadRequestException('File content does not match extension!')
