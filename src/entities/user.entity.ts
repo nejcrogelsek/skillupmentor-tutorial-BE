@@ -1,9 +1,8 @@
 import { Exclude } from 'class-transformer'
 import { UserAccess } from 'interfaces/user.interface'
-import { Column, Entity, OneToMany } from 'typeorm'
+import { Column, Entity } from 'typeorm'
 
 import { Base } from './base.entity'
-import { Location } from './location.entity'
 
 @Entity()
 export class User extends Base {
@@ -20,7 +19,7 @@ export class User extends Base {
   access: UserAccess
 
   @Column({ nullable: true })
-  image_path: string
+  avatar: string
 
   @Column({ nullable: true })
   @Exclude()
@@ -29,7 +28,4 @@ export class User extends Base {
   @Column({ nullable: true, default: null })
   @Exclude()
   refresh_token: string
-
-  @OneToMany(() => Location, (location) => location.user)
-  locations: Location[]
 }

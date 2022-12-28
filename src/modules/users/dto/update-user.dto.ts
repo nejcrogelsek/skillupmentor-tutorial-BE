@@ -20,7 +20,7 @@ export class UpdateUserDto {
   access?: UserAccess
 
   @IsOptional()
-  image_path?: string
+  avatar?: string
 
   @ValidateIf((o) => typeof o.password === 'string' && o.password.length > 0)
   @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/, {

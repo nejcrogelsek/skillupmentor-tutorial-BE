@@ -16,7 +16,7 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     try {
-      return this.usersRepository.find({ relations: ['locations'] })
+      return this.usersRepository.find()
     } catch (error) {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while searching for list of users.')
@@ -26,7 +26,6 @@ export class UsersService {
   async findBy(property: string, value: PropertyTypes): Promise<User> {
     try {
       return this.usersRepository.findOne({
-        relations: ['locations'],
         where: { [property]: value },
       })
     } catch (error) {
@@ -38,7 +37,6 @@ export class UsersService {
   async findById(id: string): Promise<User> {
     try {
       const user = this.usersRepository.findOne({
-        relations: ['locations'],
         where: { id },
       })
       if (!user) {
@@ -94,14 +92,14 @@ export class UsersService {
     }
   }
 
-  async updateUserImageId(id: string, image_path: string): Promise<User> {
+  async updateUserImageId(id: string, avatar: string): Promise<User> {
     const user = await this.findById(id)
-    return this.update(user.id, { image_path })
+    return this.update(user.id, { avatar })
   }
 
   async findImageNameByUserId(id: string): Promise<string> {
     const user = await this.findById(id)
-    return user.image_path
+    return user.avatar
   }
 
   async remove(id: string): Promise<User> {

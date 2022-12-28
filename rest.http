@@ -24,13 +24,16 @@ Content-Type: application/json
 GET http://localhost:8080/users/get/image HTTP/1.1
 
 ### GET /users
+GET http://localhost:8080/auth HTTP/1.1
+
+### GET /users
 GET http://localhost:8080/users HTTP/1.1
 
 ### GET /users/:id
 GET http://localhost:8080/users/86aae4ab-cd75-4963-afb8-16e677347e88 HTTP/1.1
 
 ### DELETE /users/:id
-DELETE http://localhost:8080/users/f548d66b-075c-4d6a-a11e-7294c011a761 HTTP/1.1
+DELETE http://localhost:8080/users/cc52caaa-ead0-4d44-8505-51727a670c67 HTTP/1.1
 
 ### PATCH /users/:id
 PATCH http://localhost:8080/users/50b477f4-88bf-4ba8-8353-7d1aa6c6f1a5 HTTP/1.1

@@ -57,7 +57,7 @@ export class UsersController {
   }
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('image_path', saveImageToStorage))
+  @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
   async upload(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: string): Promise<User> {
     const filename = file?.filename
