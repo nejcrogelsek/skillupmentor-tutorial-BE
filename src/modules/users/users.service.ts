@@ -100,7 +100,6 @@ export class UsersService {
   }
 
   async findImageNameByUserId(id: string): Promise<string> {
-    console.log('userId: ', id)
     const user = await this.findById(id)
     return user.image_path
   }

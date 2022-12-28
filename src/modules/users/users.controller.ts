@@ -9,7 +9,6 @@ import {
   HttpStatus,
   Param,
   Post,
-  Request,
   Response,
   UploadedFile,
   UseInterceptors,
@@ -17,7 +16,6 @@ import {
 import { Patch } from '@nestjs/common/decorators/index'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { GetCurrentUserId } from 'decorators/get-current-user-id.decorator'
-import { Public } from 'decorators/public.decorator'
 import { User } from 'entities/user.entity'
 import { isFileExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
 import { join } from 'path'
@@ -46,7 +44,6 @@ export class UsersController {
   @Get('get/image')
   @HttpCode(HttpStatus.OK)
   async findImage(@GetCurrentUserId() userId: string, @Response() res): Promise<void> {
-    console.log('hello')
     const imageName = await this.usersService.findImageNameByUserId(userId)
     return res.sendFile(imageName, {
       root: './files',

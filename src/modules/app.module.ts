@@ -1,4 +1,4 @@
-import { forwardRef, NestModule } from '@nestjs/common'
+import { NestModule } from '@nestjs/common'
 import { MiddlewareConsumer } from '@nestjs/common'
 import { RequestMethod } from '@nestjs/common'
 import { Module } from '@nestjs/common'

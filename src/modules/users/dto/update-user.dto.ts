@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, Matches, MinLength, ValidateIf } from 'class-validator'
+import { IsEmail, IsOptional, Matches, ValidateIf } from 'class-validator'
 import { Match } from 'decorators/match-decorator'
 import { UserAccess } from 'interfaces/user.interface'
 
