@@ -94,6 +94,16 @@ export class UsersService {
     }
   }
 
+  async updateUserImageId(id: string, image_path: string): Promise<User> {
+    const user = await this.findById(id)
+    return this.update(user.id, { image_path })
+  }
+
+  async findImageNameByUserId(id: string): Promise<string> {
+    const user = await this.findById(id)
+    return user.image_path
+  }
+
   async remove(id: string): Promise<User> {
     const user = await this.findById(id)
     try {

@@ -19,6 +19,9 @@ export class UpdateUserDto {
   @IsOptional()
   access?: UserAccess
 
+  @IsOptional()
+  image_path?: string
+
   @ValidateIf((o) => typeof o.password === 'string' && o.password.length > 0)
   @Matches(/^(?=.*\d)[A-Za-z.\s_-]+[\w~@#$%^&*+=`|{}:;!.?"()[\]-]{6,}/, {
     message:

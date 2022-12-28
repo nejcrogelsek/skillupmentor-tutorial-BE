@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   ClassSerializerInterceptor,
   Controller,
@@ -8,10 +9,17 @@ import {
   HttpStatus,
   Param,
   Post,
+  Request,
+  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common'
 import { Patch } from '@nestjs/common/decorators/index'
+import { FileInterceptor } from '@nestjs/platform-express'
+import { GetCurrentUserId } from 'decorators/get-current-user-id.decorator'
+import { Public } from 'decorators/public.decorator'
 import { User } from 'entities/user.entity'
+import { isFileExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
+import { join } from 'path'
 
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
@@ -38,6 +46,24 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto)
+  }
+
+  @Public()
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('image_path', saveImageToStorage))
+  @HttpCode(HttpStatus.OK)
+  async upload(@UploadedFile() file: Express.Multer.File, @Request() req): Promise<User> {
+    const filename = file?.filename
+
+    if (!filename) throw new BadRequestException('File must be a png, jpg/jpeg')
+
+    const imagesFolderPath = join(process.cwd(), 'files')
+    const fullImagePath = join(imagesFolderPath + '/' + file.filename)
+    if (await isFileExtensionSafe(fullImagePath)) {
+      return this.usersService.updateUserImageId('50b477f4-88bf-4ba8-8353-7d1aa6c6f1a5', filename)
+    }
+    removeFile(fullImagePath)
+    throw new BadRequestException('File content does not match extension!')
   }
 
   @Patch(':id')
