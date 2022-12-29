@@ -13,4 +13,4 @@ export interface UserData {
   avatar?: string
 }
 
-export type PropertyTypes = string | boolean | Date | null | undefined
+export type PropertyTypes = string | number | boolean | Date | null | undefined

@@ -29,7 +29,7 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<User> {
     Logging.log('Validating user...')
-    const user = await this.usersService.findBy('email', email)
+    const user = await this.usersService.findBy({ email: email })
     if (!user) {
       throw new BadRequestException('Invalid credentials.')
     }

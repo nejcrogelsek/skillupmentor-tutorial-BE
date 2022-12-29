@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { AbstractService } from 'common/abstract.service'
 import { User } from 'entities/user.entity'
 import { PostgresErrorCode } from 'helpers/postgresErrorCodes.enum'
-import { PropertyTypes } from 'interfaces'
 import Logging from 'library/Logging'
 import { Repository } from 'typeorm'
 import { compareHash, hash } from 'utils/bcrypt'
@@ -11,46 +11,13 @@ import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
-export class UsersService {
-  constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
-
-  async findAll(): Promise<User[]> {
-    try {
-      return this.usersRepository.find()
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Something went wrong while searching for list of users.')
-    }
-  }
-
-  async findBy(property: string, value: PropertyTypes): Promise<User> {
-    try {
-      return this.usersRepository.findOne({
-        where: { [property]: value },
-      })
-    } catch (error) {
-      Logging.error(error)
-      throw new BadRequestException(`Something went wrong while searching for a user with ${property}: ${value}.`)
-    }
-  }
-
-  async findById(id: string): Promise<User> {
-    try {
-      const user = this.usersRepository.findOne({
-        where: { id },
-      })
-      if (!user) {
-        throw new BadRequestException(`Cannot find user with id: ${id}`)
-      }
-      return user
-    } catch (error) {
-      Logging.error(error)
-      throw new BadRequestException(`Something went wrong while searching for a user with id: ${id}`)
-    }
+export class UsersService extends AbstractService {
+  constructor(@InjectRepository(User) private readonly usersRepository: Repository<User>) {
+    super(usersRepository)
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.findBy('email', createUserDto.email)
+    const user = await this.findBy({ email: createUserDto.email })
     if (user) {
       throw new BadRequestException('User with that email already exists.')
     }
@@ -100,15 +67,5 @@ export class UsersService {
   async findImageNameByUserId(id: string): Promise<string> {
     const user = await this.findById(id)
     return user.avatar
-  }
-
-  async remove(id: string): Promise<User> {
-    const user = await this.findById(id)
-    try {
-      return this.usersRepository.remove(user)
-    } catch (error) {
-      Logging.error(error)
-      throw new InternalServerErrorException('Something went wrong while deleting the user.')
-    }
   }
 }
