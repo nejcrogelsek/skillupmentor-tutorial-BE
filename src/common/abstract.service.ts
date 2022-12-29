@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
+import { PaginatedResult } from 'interfaces/paginated-result.interface'
 import Logging from 'library/Logging'
 import { Repository } from 'typeorm'
 
@@ -50,6 +51,25 @@ export abstract class AbstractService {
     } catch (error) {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while deleting the user.')
+    }
+  }
+
+  async paginate(page = 1, relations = []): Promise<PaginatedResult> {
+    const take = 10
+
+    const [data, total] = await this.repository.findAndCount({
+      take,
+      skip: (page - 1) * take,
+      relations,
+    })
+
+    return {
+      data: data,
+      meta: {
+        total,
+        page,
+        last_page: Math.ceil(total / take),
+      },
     }
   }
 }

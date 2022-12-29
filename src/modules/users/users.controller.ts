@@ -9,6 +9,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Response,
   UploadedFile,
   UseInterceptors,
@@ -18,6 +19,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { GetCurrentUserId } from 'decorators/get-current-user-id.decorator'
 import { User } from 'entities/user.entity'
 import { isFileExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
+import { PaginatedResult } from 'interfaces/paginated-result.interface'
 import { join } from 'path'
 
 import { CreateUserDto } from './dto/create-user.dto'
@@ -31,8 +33,8 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<User[]> {
-    return this.usersService.findAll(['role'])
+  async findAll(@Query('page') page: number): Promise<PaginatedResult> {
+    return this.usersService.paginate(page, ['role'])
   }
 
   @Get(':id')

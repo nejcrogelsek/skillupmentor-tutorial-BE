@@ -14,7 +14,8 @@ import {
 import { GetCurrentUser, GetCurrentUserId, Public } from 'decorators'
 import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
-import { RequestWithUser, UserData } from 'interfaces'
+import { RequestWithUser } from 'interfaces/auth.interface'
+import { UserData } from 'interfaces/user.interface'
 
 import { AuthService } from './auth.service'
 import { RegisterUserDto } from './dto/register-user.dto'
@@ -65,7 +66,7 @@ export class AuthController {
       last_name: user.last_name,
       email: user.email,
       avatar: user.avatar,
-      role: { id: user.role.id, name: user.role.name },
+      role: user.role?.id ? { id: user.role?.id, name: user.role?.name } : null,
     }
   }
 }
