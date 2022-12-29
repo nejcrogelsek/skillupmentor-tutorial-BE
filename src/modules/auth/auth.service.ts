@@ -79,7 +79,6 @@ export class AuthService {
 
   async refreshTokens(req: Request): Promise<User> {
     const user = await this.usersService.findBy({ refresh_token: req.cookies.refresh_token }, ['role'])
-    console.log(user)
     if (!user) {
       throw new ForbiddenException()
     }

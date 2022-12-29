@@ -11,19 +11,47 @@ export class RolesController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Role[]> {
-    return this.rolesService.findAll()
+    return this.rolesService.findAll(['permissions'])
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOne(@Param('id') id: string): Promise<Role> {
+    return this.rolesService.findById(id, ['permissions'])
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createRoleDto: CreateUpdateRoleDto): Promise<Role> {
-    return this.rolesService.create(createRoleDto)
+  async create(
+    @Body() createRoleDto: CreateUpdateRoleDto,
+    @Body('permissions') permissionsIds: string[],
+  ): Promise<Role> {
+    /*
+      [1, 2]
+      [{id:1},{id:2}]
+    */
+    return this.rolesService.create(
+      createRoleDto,
+      permissionsIds.map((id) => ({
+        id,
+      })),
+    )
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateRoleDto: CreateUpdateRoleDto): Promise<Role> {
-    return this.rolesService.update(id, updateRoleDto)
+  async update(
+    @Param('id') id: string,
+    @Body() updateRoleDto: CreateUpdateRoleDto,
+    @Body('permissions') permissionsIds: string[],
+  ): Promise<Role> {
+    return this.rolesService.update(
+      id,
+      updateRoleDto,
+      permissionsIds.map((id) => ({
+        id,
+      })),
+    )
   }
 
   @Delete(':id')

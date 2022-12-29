@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { AbstractService } from 'common/abstract.service'
+import { Permission } from 'entities/permission.entity'
 import { Role } from 'entities/role.entity'
 import Logging from 'library/Logging'
 import { Repository } from 'typeorm'
@@ -13,9 +14,9 @@ export class RolesService extends AbstractService {
     super(rolesRepository)
   }
 
-  async create(createRoleDto: CreateUpdateRoleDto): Promise<Role> {
+  async create(createRoleDto: CreateUpdateRoleDto, permissionsIds: { id: string }[]): Promise<Role> {
     try {
-      const role = this.rolesRepository.create(createRoleDto)
+      const role = this.rolesRepository.create({ ...createRoleDto, permissions: permissionsIds })
       return this.rolesRepository.save(role)
     } catch (error) {
       Logging.error(error)
@@ -23,10 +24,11 @@ export class RolesService extends AbstractService {
     }
   }
 
-  async update(roleId: string, updateRoleDto: CreateUpdateRoleDto): Promise<Role> {
+  async update(roleId: string, updateRoleDto: CreateUpdateRoleDto, permissionsIds: { id: string }[]): Promise<Role> {
     const role = (await this.findById(roleId)) as Role
     try {
       role.name = updateRoleDto.name
+      role.permissions = permissionsIds as Permission[]
       return this.rolesRepository.save(role)
     } catch (error) {
       Logging.error(error)
