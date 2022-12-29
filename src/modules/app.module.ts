@@ -10,6 +10,7 @@ import { LoggerMiddleware } from 'middleware/logger.middleware'
 import { AuthModule } from './auth/auth.module'
 import { JwtAuthGuard } from './auth/guards'
 import { DatabaseModule } from './database/database.module'
+import { RolesModule } from './roles/roles.module'
 import { UsersModule } from './users/users.module'
 
 @Module({
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module'
     UsersModule,
     DatabaseModule,
     AuthModule,
+    RolesModule,
   ],
   controllers: [],
   providers: [

@@ -1,10 +1,3 @@
-export enum UserAccess {
-  USER = 'user',
-  PRIVILEGED = 'privileged',
-  ADMIN = 'admin',
-  SUPERUSER = 'superuser',
-}
-
 export interface UserData {
   id: string
   first_name?: string
@@ -12,5 +5,3 @@ export interface UserData {
   email: string
   avatar?: string
 }
-
-export type PropertyTypes = string | number | boolean | Date | null | undefined

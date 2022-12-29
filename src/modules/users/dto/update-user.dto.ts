@@ -1,6 +1,5 @@
-import { IsEmail, IsOptional, Matches, ValidateIf } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsOptional, Matches, ValidateIf } from 'class-validator'
 import { Match } from 'decorators/match-decorator'
-import { UserAccess } from 'interfaces/user.interface'
 
 export class UpdateUserDto {
   @IsOptional()
@@ -17,7 +16,7 @@ export class UpdateUserDto {
   refresh_token?: string | null
 
   @IsOptional()
-  access?: UserAccess
+  role_id?: string
 
   @IsOptional()
   avatar?: string

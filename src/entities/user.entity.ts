@@ -1,8 +1,8 @@
 import { Exclude } from 'class-transformer'
-import { UserAccess } from 'interfaces/user.interface'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 
 import { Base } from './base.entity'
+import { Role } from './role.entity'
 
 @Entity()
 export class User extends Base {
@@ -15,9 +15,6 @@ export class User extends Base {
   @Column({ nullable: true })
   last_name: string
 
-  @Column({ type: 'enum', enum: UserAccess, default: UserAccess.USER })
-  access: UserAccess
-
   @Column({ nullable: true })
   avatar: string
 
@@ -28,4 +25,8 @@ export class User extends Base {
   @Column({ nullable: true, default: null })
   @Exclude()
   refresh_token: string
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'role_id' })
+  role: Role
 }

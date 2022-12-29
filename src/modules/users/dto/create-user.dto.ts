@@ -1,6 +1,5 @@
 import { IsEmail, IsNotEmpty, IsOptional, Matches, MinLength } from 'class-validator'
 import { Match } from 'decorators/match-decorator'
-import { UserAccess } from 'interfaces/user.interface'
 
 export class CreateUserDto {
   @IsOptional()
@@ -13,8 +12,8 @@ export class CreateUserDto {
   @IsEmail()
   email: string
 
-  @IsOptional()
-  access?: UserAccess
+  @IsNotEmpty()
+  role_id: string
 
   @IsNotEmpty()
   @MinLength(6)
