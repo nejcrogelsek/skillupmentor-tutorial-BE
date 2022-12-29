@@ -26,7 +26,7 @@ export class User extends Base {
   @Exclude()
   refresh_token: string
 
-  @ManyToOne(() => Role)
+  @ManyToOne(() => Role, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'role_id' })
   role: Role | null
 }

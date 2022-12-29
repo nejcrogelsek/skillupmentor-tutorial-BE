@@ -32,7 +32,7 @@ export class UsersController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<User[]> {
-    return this.usersService.findAll()
+    return this.usersService.findAll(['role'])
   }
 
   @Get(':id')

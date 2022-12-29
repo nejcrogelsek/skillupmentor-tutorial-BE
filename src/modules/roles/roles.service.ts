@@ -14,13 +14,23 @@ export class RolesService extends AbstractService {
   }
 
   async create(createRoleDto: CreateUpdateRoleDto): Promise<Role> {
-    const role = this.rolesRepository.create(createRoleDto)
-    return this.rolesRepository.save(role)
+    try {
+      const role = this.rolesRepository.create(createRoleDto)
+      return this.rolesRepository.save(role)
+    } catch (error) {
+      Logging.error(error)
+      throw new BadRequestException('Something went wrong while creating a new role.')
+    }
   }
 
   async update(roleId: string, updateRoleDto: CreateUpdateRoleDto): Promise<Role> {
     const role = (await this.findById(roleId)) as Role
-    role.name = updateRoleDto.name
-    return this.rolesRepository.save(role)
+    try {
+      role.name = updateRoleDto.name
+      return this.rolesRepository.save(role)
+    } catch (error) {
+      Logging.error(error)
+      throw new InternalServerErrorException('Something went wrong while updating the role.')
+    }
   }
 }
