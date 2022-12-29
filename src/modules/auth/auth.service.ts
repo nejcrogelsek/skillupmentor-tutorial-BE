@@ -77,8 +77,9 @@ export class AuthService {
     }
   }
 
-  async refreshTokens(req: Request): Promise<UserData> {
-    const user = await this.usersService.findBy('refresh_token', req.cookies.refresh_token)
+  async refreshTokens(req: Request): Promise<User> {
+    const user = await this.usersService.findBy({ refresh_token: req.cookies.refresh_token }, ['role'])
+    console.log(user)
     if (!user) {
       throw new ForbiddenException()
     }
@@ -99,10 +100,7 @@ export class AuthService {
       Logging.error(error)
       throw new InternalServerErrorException('Something went wrong while setting cookies into response header.')
     }
-    return {
-      id: user.id,
-      email: user.email,
-    }
+    return user
   }
 
   async updateRtHash(userId: string, rt: string): Promise<void> {

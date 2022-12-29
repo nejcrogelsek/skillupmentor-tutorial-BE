@@ -51,7 +51,7 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Get('refresh')
   @HttpCode(HttpStatus.ACCEPTED)
-  async refreshTokens(@Req() req: Request): Promise<UserData> {
+  async refreshTokens(@Req() req: Request): Promise<User> {
     return this.authService.refreshTokens(req)
   }
 
@@ -65,6 +65,7 @@ export class AuthController {
       last_name: user.last_name,
       email: user.email,
       avatar: user.avatar,
+      role: { id: user.role.id, name: user.role.name },
     }
   }
 }

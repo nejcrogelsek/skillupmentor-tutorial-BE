@@ -28,5 +28,5 @@ export class User extends Base {
 
   @ManyToOne(() => Role)
   @JoinColumn({ name: 'role_id' })
-  role: Role
+  role: Role | null
 }

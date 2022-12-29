@@ -20,6 +20,9 @@ Content-Type: application/json
   	"password": "Nejc123!!"
 }
 
+### GET /auth/refresh
+GET http://localhost:8080/auth/refresh HTTP/1.1
+
 ### GET /users/image
 GET http://localhost:8080/users/get/image HTTP/1.1
 
@@ -55,12 +58,13 @@ GET http://localhost:8080/users/86aae4ab-cd75-4963-afb8-16e677347e88 HTTP/1.1
 DELETE http://localhost:8080/users/cc52caaa-ead0-4d44-8505-51727a670c67 HTTP/1.1
 
 ### PATCH /users/:id
-PATCH http://localhost:8080/users/50b477f4-88bf-4ba8-8353-7d1aa6c6f1a5 HTTP/1.1
+PATCH http://localhost:8080/users/8cc51069-7c9c-47c7-bb8f-ad559c49401f HTTP/1.1
 Content-Type: application/json
 
 {
     "first_name": "Nejko",
-  	"email": "nejcrogelsek0@gmail.com"
+  	"email": "nejcrogelsek0@gmail.com",
+    "role_id": "cb23751a-d735-4fde-8ca5-245e05922277"
 }
 
 ### GET /products

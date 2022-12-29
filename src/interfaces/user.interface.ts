@@ -4,4 +4,5 @@ export interface UserData {
   last_name?: string
   email: string
   avatar?: string
+  role?: { id: string; name: string }
 }
