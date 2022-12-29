@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { AbstractService } from 'modules/common/abstract.service'
 import { User } from 'entities/user.entity'
 import { PostgresErrorCode } from 'helpers/postgresErrorCodes.enum'
 import Logging from 'library/Logging'
+import { AbstractService } from 'modules/common/abstract.service'
 import { Repository } from 'typeorm'
 import { compareHash, hash } from 'utils/bcrypt'
 

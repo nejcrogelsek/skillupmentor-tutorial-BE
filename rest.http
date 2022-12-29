@@ -20,6 +20,19 @@ Content-Type: application/json
   	"password": "Nejc123!!"
 }
 
+### GET /orders
+GET http://localhost:8080/orders HTTP/1.1
+
+### POST /orders
+POST http://localhost:8080/orders HTTP/1.1
+Content-Type: application/json
+
+{
+    "first_name":"Nejc",
+    "last_name":"Rogelšek",
+  	"email": "nejcrogelsek0@gmail.com"
+}
+
 ### GET /auth/refresh
 GET http://localhost:8080/auth/refresh HTTP/1.1
 

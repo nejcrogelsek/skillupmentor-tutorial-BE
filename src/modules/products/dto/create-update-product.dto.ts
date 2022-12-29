@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsOptional } from 'class-validator'
 
 export class CreateUpdateProductDto {
   @IsNotEmpty()
@@ -8,5 +8,8 @@ export class CreateUpdateProductDto {
   description: string
 
   @IsNotEmpty()
-  price: string
+  price: number
+
+  @IsOptional()
+  image: string
 }

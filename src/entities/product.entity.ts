@@ -14,5 +14,5 @@ export class Product extends Base {
   image: string
 
   @Column()
-  price: string
+  price: number
 }
