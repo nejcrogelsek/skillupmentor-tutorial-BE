@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common'
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common'
 import { Role } from 'entities/role.entity'
+import { PaginatedResult } from 'interfaces/paginated-result.interface'
 
 import { CreateUpdateRoleDto } from './dto/create-update-role.dto'
 import { RolesService } from './roles.service'
@@ -12,6 +13,12 @@ export class RolesController {
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<Role[]> {
     return this.rolesService.findAll(['permissions'])
+  }
+
+  @Get('/paginated')
+  @HttpCode(HttpStatus.OK)
+  async paginated(@Query('page') page: number): Promise<PaginatedResult> {
+    return this.rolesService.paginate(page, ['permissions'])
   }
 
   @Get(':id')
