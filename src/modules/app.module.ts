@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module'
 import { JwtAuthGuard } from './auth/guards'
 import { DatabaseModule } from './database/database.module'
 import { OrdersModule } from './orders/orders.module'
+import { PermissionsGuard } from './permissions/permissions.guard'
 import { PermissionsModule } from './permissions/permissions.module'
 import { ProductsModule } from './products/products.module'
 import { RolesModule } from './roles/roles.module'
@@ -36,6 +37,10 @@ import { UsersModule } from './users/users.module'
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
     },
   ],
 })

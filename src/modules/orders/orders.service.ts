@@ -47,4 +47,12 @@ export class OrdersService extends AbstractService {
     response.attachment('orders.csv')
     return response.send(csv)
   }
+
+  async chart(): Promise<any> {
+    return this.ordersRepository.query(`
+    SELECT to_date(cast(o.created_at as TEXT), '%Y-%m-%d') as date, sum(oi.price * oi.quantity) as sum FROM "order" o
+    JOIN "order_item" oi ON o.id = oi.order_id
+    GROUP BY date;
+    `)
+  }
 }

@@ -11,7 +11,9 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common'
-import { GetCurrentUser, GetCurrentUserId, Public } from 'decorators'
+import { GetCurrentUser } from 'decorators/get-current-user.decorator'
+import { GetCurrentUserId } from 'decorators/get-current-user-id.decorator'
+import { Public } from 'decorators/public.decorator'
 import { User } from 'entities/user.entity'
 import { Request, Response } from 'express'
 import { RequestWithUser } from 'interfaces/auth.interface'

@@ -17,6 +17,7 @@ import {
 import { Patch } from '@nestjs/common/decorators/index'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { GetCurrentUserId } from 'decorators/get-current-user-id.decorator'
+import { HasPermission } from 'decorators/has-permission.decorator'
 import { User } from 'entities/user.entity'
 import { isFileExtensionSafe, removeFile, saveImageToStorage } from 'helpers/imageStorage'
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
@@ -33,18 +34,21 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @HasPermission('users')
   async findAll(@Query('page') page: number): Promise<PaginatedResult> {
     return this.usersService.paginate(page, ['role'])
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @HasPermission('users')
   async findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findById(id)
   }
 
   @Get('get/image')
   @HttpCode(HttpStatus.OK)
+  @HasPermission('users')
   async findImage(@GetCurrentUserId() userId: string, @Response() res): Promise<void> {
     const imageName = await this.usersService.findImageNameByUserId(userId)
     return res.sendFile(imageName, {
@@ -54,6 +58,7 @@ export class UsersController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @HasPermission('users')
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto)
   }
@@ -61,6 +66,7 @@ export class UsersController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
+  @HasPermission('users')
   async upload(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: string): Promise<User> {
     const filename = file?.filename
 
@@ -77,12 +83,14 @@ export class UsersController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @HasPermission('users')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.update(id, updateUserDto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
+  @HasPermission('users')
   async remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id)
   }

@@ -30,4 +30,9 @@ export class OrdersController {
   async export(@Res() response: Response): Promise<any> {
     return this.ordersService.export(response)
   }
+
+  @Get('chart')
+  async chart(): Promise<any> {
+    return this.ordersService.chart()
+  }
 }
