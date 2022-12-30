@@ -44,8 +44,8 @@ export class ProductsController {
     return this.productsService.create(createProductDto)
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
+  @Post('upload/:id')
+  @UseInterceptors(FileInterceptor('image', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
   async upload(@UploadedFile() file: Express.Multer.File, @Param('id') productId: string): Promise<Product> {
     const filename = file?.filename

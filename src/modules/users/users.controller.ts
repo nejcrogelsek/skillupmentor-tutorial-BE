@@ -63,11 +63,12 @@ export class UsersController {
     return this.usersService.create(createUserDto)
   }
 
-  @Post('upload')
+  @Post('upload/:id')
   @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
   // @HasPermission('users')
-  async upload(@UploadedFile() file: Express.Multer.File, @GetCurrentUserId() userId: string): Promise<User> {
+  async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<User> {
+    console.log('userIDDDDDDD: ', id)
     const filename = file?.filename
 
     if (!filename) throw new BadRequestException('File must be a png, jpg/jpeg')
@@ -75,7 +76,7 @@ export class UsersController {
     const imagesFolderPath = join(process.cwd(), 'files')
     const fullImagePath = join(imagesFolderPath + '/' + file.filename)
     if (await isFileExtensionSafe(fullImagePath)) {
-      return this.usersService.updateUserImageId(userId, filename)
+      return this.usersService.updateUserImageId(id, filename)
     }
     removeFile(fullImagePath)
     throw new BadRequestException('File content does not match extension!')

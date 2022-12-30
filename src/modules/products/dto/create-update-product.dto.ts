@@ -11,5 +11,5 @@ export class CreateUpdateProductDto {
   price: number
 
   @IsOptional()
-  image: string
+  image?: string
 }
