@@ -1,11 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Order } from 'entities/order.entity'
-import Logging from 'library/Logging'
+import { Response } from 'express'
+import { Parser } from 'json2csv'
 import { AbstractService } from 'modules/common/abstract.service'
 import { Repository } from 'typeorm'
-
-import { CreateOrderDto } from './dto/create-order.dto'
 
 @Injectable()
 export class OrdersService extends AbstractService {
@@ -13,13 +12,39 @@ export class OrdersService extends AbstractService {
     super(ordersRepository)
   }
 
-  async create(createOrderDto: CreateOrderDto): Promise<Order> {
-    try {
-      const order = this.ordersRepository.create(createOrderDto)
-      return this.ordersRepository.save(order)
-    } catch (error) {
-      Logging.error(error)
-      throw new BadRequestException('Something went wrong while creating a new order.')
-    }
+  async export(response: Response): Promise<any> {
+    const parser = new Parser({
+      fields: ['ID', 'Name', 'Email', 'Product Title', 'Price', 'Quantity'],
+    })
+
+    const json = []
+
+    const orders: Order[] = await this.findAll(['order_items'])
+    orders.forEach((o) => {
+      json.push({
+        ID: o.id,
+        Name: o.name,
+        Email: o.email,
+        'Product Title': '',
+        Price: '',
+        Quantity: '',
+      })
+
+      o.order_items.forEach((ot) => {
+        json.push({
+          ID: '',
+          Name: '',
+          Email: '',
+          'Product Title': ot.product_title,
+          Price: ot.price,
+          Quantity: ot.quantity,
+        })
+      })
+    })
+
+    const csv = parser.parse(json)
+    response.header('Content-Type', 'text/csv')
+    response.attachment('orders.csv')
+    return response.send(csv)
   }
 }
