@@ -9,6 +9,7 @@ import {
   Res,
   UseInterceptors,
 } from '@nestjs/common'
+import { Public } from 'decorators/public.decorator'
 import { Response } from 'express'
 import { PaginatedResult } from 'interfaces/paginated-result.interface'
 
@@ -25,6 +26,7 @@ export class OrdersController {
     return this.ordersService.paginate(page, ['order_items'])
   }
 
+  @Public()
   @Post('export')
   @HttpCode(HttpStatus.OK)
   async export(@Res() response: Response): Promise<any> {
@@ -32,7 +34,7 @@ export class OrdersController {
   }
 
   @Get('chart')
-  async chart(): Promise<any> {
+  async chart(): Promise<{ date: string; sum: string }[]> {
     return this.ordersService.chart()
   }
 }
