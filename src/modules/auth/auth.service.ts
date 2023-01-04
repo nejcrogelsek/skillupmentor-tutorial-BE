@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   async login(userFromRequest: User, res: Response): Promise<void> {
-    const user = await this.usersService.findById(userFromRequest.id)
+    const user = await this.usersService.findById(userFromRequest.id, ['role'])
     const accessToken = await this.generateToken(user.id, user.email, JwtType.ACCESS_TOKEN)
     const accessTokenCookie = await this.generateCookie(accessToken, CookieType.ACCESS_TOKEN)
     const refreshToken = await this.generateToken(user.id, user.email, JwtType.REFRESH_TOKEN)

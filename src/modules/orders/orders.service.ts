@@ -43,7 +43,7 @@ export class OrdersService extends AbstractService {
     })
 
     const csv = parser.parse(json)
-    response.header('Content-Type', 'text/csv')
+    response.setHeader('Content-Type', 'text/csv')
     response.attachment('orders.csv')
     return response.send(csv)
   }
@@ -57,10 +57,11 @@ export class OrdersService extends AbstractService {
     const chartData: { date: string; sum: string }[] = []
     for (let index = 0; index < apiData.length; index++) {
       chartData.push({
-        date: (apiData[0].date as Date).toISOString().split('T')[0],
+        date: (apiData[index].date as Date).toISOString().split('T')[0],
         sum: apiData[index].sum,
       })
     }
+    console.log(apiData, chartData)
     return chartData
   }
 }
