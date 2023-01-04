@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common'
 import { HasPermission } from 'decorators/has-permission.decorator'
 import { Permission } from 'entities/permission.entity'
 
@@ -11,7 +11,7 @@ export class PermissionsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  // @HasPermission('view_permissions')
+  @HasPermission('view_permissions')
   async findAll(): Promise<Permission[]> {
     return this.permissionsService.findAll()
   }

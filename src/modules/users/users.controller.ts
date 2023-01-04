@@ -34,21 +34,21 @@ export class UsersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  // @HasPermission('users')
+  @HasPermission('users')
   async findAll(@Query('page') page: number): Promise<PaginatedResult> {
     return this.usersService.paginate(page, ['role'])
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  // @HasPermission('users')
+  @HasPermission('users')
   async findOne(@Param('id') id: string): Promise<User> {
     return this.usersService.findById(id)
   }
 
   @Get('get/image')
   @HttpCode(HttpStatus.OK)
-  // @HasPermission('users')
+  @HasPermission('users')
   async findImage(@GetCurrentUserId() userId: string, @Response() res): Promise<void> {
     const imageName = await this.usersService.findImageNameByUserId(userId)
     return res.sendFile(imageName, {
@@ -58,7 +58,7 @@ export class UsersController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  // @HasPermission('users')
+  @HasPermission('users')
   async create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto)
   }
@@ -66,7 +66,7 @@ export class UsersController {
   @Post('upload/:id')
   @UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
   @HttpCode(HttpStatus.CREATED)
-  // @HasPermission('users')
+  @HasPermission('users')
   async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<User> {
     console.log('userIDDDDDDD: ', id)
     const filename = file?.filename
@@ -84,14 +84,14 @@ export class UsersController {
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
-  // @HasPermission('users')
+  @HasPermission('users')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.update(id, updateUserDto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  // @HasPermission('users')
+  @HasPermission('users')
   async remove(@Param('id') id: string): Promise<User> {
     return this.usersService.remove(id)
   }
