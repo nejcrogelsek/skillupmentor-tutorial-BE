@@ -68,7 +68,6 @@ export class UsersController {
   @HttpCode(HttpStatus.CREATED)
   @HasPermission('users')
   async upload(@UploadedFile() file: Express.Multer.File, @Param('id') id: string): Promise<User> {
-    console.log('userIDDDDDDD: ', id)
     const filename = file?.filename
 
     if (!filename) throw new BadRequestException('File must be a png, jpg/jpeg')

@@ -61,7 +61,6 @@ export class OrdersService extends AbstractService {
         sum: apiData[index].sum,
       })
     }
-    console.log(apiData, chartData)
     return chartData
   }
 }
