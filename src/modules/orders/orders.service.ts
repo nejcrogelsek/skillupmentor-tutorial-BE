@@ -45,7 +45,7 @@ export class OrdersService extends AbstractService {
     const csv = parser.parse(json)
     response.setHeader('Content-Type', 'text/csv')
     response.attachment('orders.csv')
-    return response.send(csv)
+    response.send(csv)
   }
 
   async chart(): Promise<{ date: string; sum: string }[]> {

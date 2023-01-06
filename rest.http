@@ -21,6 +21,8 @@ Content-Type: application/json
 }
 
 ### GET /orders
+POST http://localhost:8080/orders/export HTTP/1.1
+###
 GET http://localhost:8080/orders HTTP/1.1
 
 ### GET /permissions
